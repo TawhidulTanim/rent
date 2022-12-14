@@ -1,0 +1,45 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+class Payment_model extends cI_model{
+
+
+	public function selectData($table,$field,$con=false,$row=false){
+		$this->db->select($field);
+		$q = $this->db->get($table);
+		if($con)
+			$this->db->where($con);
+
+		if($row)
+			$r = $q->row();
+		else
+			$r = $q->result();
+			return $r;
+	}
+
+
+	public function viewRent(){
+		$this->db->select(['tbl_payment.*','tbl_tenant.name']);
+		$this->db->from('tbl_payment');
+		$this->db->join('tbl_tenant','tbl_tenant.id = tbl_payment.t_id');
+		$this->db->join('tbl_rent','tbl_rent.id = tbl_payment.r_id');
+		$q = $this->db->get();
+		$rslts = $q->result();
+		return $rslts;
+	}
+
+	public function insertInfo($table,$data){
+		$this->db->insert($table,$data);
+		return $this->db->insert_id();
+	}
+
+	public function updateInfo($table,$data,$con){
+		$this->db->where($con);
+		$this->db->update($table,$data);
+		return $this->db->affected_rows();
+	}
+
+	public function deleteInfo($table,$con){
+		$this->db->delete($table,$con);
+		return $this->db->affected_rows();
+	}
+}
